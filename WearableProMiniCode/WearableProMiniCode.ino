@@ -23,39 +23,28 @@ void setup() {
 void loop() {
   //read temp
   objectTemp = temp.readObjectTempC();
-  Serial.print(objectTemp);
+  
   //set all pixles to proper color
   for (int i = 0; i < 5; i++) {
     pixels.setPixelColor(i, tempColor(objectTemp));
   }
   pixels.show();
+  
+  //vibrations only if the temperature is >50 or <-15
+  if (objectTemp > 50 || objectTemp < -15)vibration(true);
+  else vibration(false);
+  
+  //debug
+  Serial.print(objectTemp);
   Serial.print("    ");
   Serial.print(Red(pixels.getPixelColor(0)));
   Serial.print("|");
   Serial.print(Green(pixels.getPixelColor(0)));
   Serial.print("|");
   Serial.println(Blue(pixels.getPixelColor(0)));
-  //vibrations only if the temperature is >50 or <-15
-  if (objectTemp > 50 || objectTemp < -15)vibration(true);
-  else vibration(false);
 }
 
-uint8_t Red(uint32_t color)
-{
-  return (color >> 16) & 0xFF;
-}
-
-// Returns the Green component of a 32-bit color
-uint8_t Green(uint32_t color)
-{
-  return (color >> 8) & 0xFF;
-}
-
-// Returns the Blue component of a 32-bit color
-uint8_t Blue(uint32_t color)
-{
-  return color & 0xFF;
-}
+////FUNCTIONS////
 
 //color calculation based on the temperature
 uint32_t tempColor (float temp) {
@@ -84,4 +73,19 @@ void vibration(boolean on) {
   else digitalWrite(vib, LOW);
 }
 
+//get color values out of 32bit color
+uint8_t Red(uint32_t color)
+{
+  return (color >> 16) & 0xFF;
+}
+
+uint8_t Green(uint32_t color)
+{
+  return (color >> 8) & 0xFF;
+}
+
+uint8_t Blue(uint32_t color)
+{
+  return color & 0xFF;
+}
 
